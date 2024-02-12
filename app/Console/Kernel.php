@@ -26,6 +26,6 @@ class Kernel extends ConsoleKernel
     }
 
     protected $commands = [
-        \App\Console\Commands\SendEmail::class,
+        \App\Console\Commands\SendEmails::class,
     ];
 }

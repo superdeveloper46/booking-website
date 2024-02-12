@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
@@ -27,6 +28,7 @@ class BookNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new Address('topwebdev46@gmail.com', 'DreamDev'),
             subject: 'Book Notification',
         );
     }
@@ -37,7 +39,7 @@ class BookNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'notification.notification',
         );
     }
 

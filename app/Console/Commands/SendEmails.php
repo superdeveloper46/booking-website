@@ -25,8 +25,7 @@ class SendEmails extends Command
      */
     public function handle()
     {
-        Mail::to('topwebdev46@gmail.com')->send(new \App\Mail\ExampleEmail());
-
+        Mail::to('topwebdev46@gmail.com')->send(new \App\Mail\BookNotification());
         $this->info('Email sent successfully.');
     }
 }
