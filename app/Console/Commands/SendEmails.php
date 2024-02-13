@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\Booking;
 
 class SendEmails extends Command
 {
@@ -25,6 +26,7 @@ class SendEmails extends Command
      */
     public function handle()
     {
+        // $bookingList = Booking::where()
         Mail::to('topwebdev46@gmail.com')->send(new \App\Mail\BookNotification());
         $this->info('Email sent successfully.');
     }

@@ -49,7 +49,15 @@ class BookingController extends Controller
     }
 
     public function BookingCalendar(){
-        return view('backend.booking.booking_calendar');
+        $bookings = Booking::select('id', 'room_id as resourceId', 'title', 'start_at AS start', 'end_at AS end', 'repeat')
+                            ->where('status', '1')
+                            ->whereDate('start_at', \DB::raw('CURDATE()'))
+                            ->get();
+        $rooms = Room::select('id', 'name as title')
+                        ->orderBy('type')
+                        ->get();
+
+        return view('backend.booking.booking_calendar', ['bookings'=>$bookings, 'rooms'=>$rooms]);
     }
 
     // User View
@@ -85,17 +93,50 @@ class BookingController extends Controller
         $end_at = $this->createDateTime($request->date, $request->end_at);
 
         $startTimeObj = new DateTime($start_at);
+        $endTimeObj = new DateTime($end_at);
         $currentDateTime = new DateTime();
         $timeDifference = $startTimeObj->getTimestamp() -$currentDateTime->getTimestamp();
 
+
+        // end_at > start_at
+        if($startTimeObj->getTimestamp() >= $endTimeObj->getTimestamp()) {
+            $notification = array(
+                'message' => 'The end time must be later than the start time.',
+                'alert-type' => 'warning'
+            );
+            return redirect()->route('book')->with($notification)->withInput();
+        }
+
+
+        // before 24 hours
         if($timeDifference < 86400) {
             $notification = array(
                 'message' => 'Booking must be made one day in advance.',
                 'alert-type' => 'warning'
             );
 
-            return redirect()->route('book')->withInput()->with($notification);
+            return redirect()->route('book')->with($notification)->withInput();
         }
+
+        // overlapping
+        if($request->repeat == "none") {
+            $overlappingBookings = Booking::findOverlappingBookings(
+                $start_at,
+                $end_at
+            );
+
+            if(!empty($overlappingBookings)) {
+                $notification = array(
+                    'message' => 'There are overlapping bookings.',
+                    'alert-type' => 'warning'
+                );
+
+                return redirect()->route('book')->with($notification)->withInput();
+            }
+        }else {
+
+        }
+
 
         $book = new Booking();
         $book->room_id = $request->room;
@@ -128,8 +169,6 @@ class BookingController extends Controller
 
         return $datetime->format('Y-m-d H:i:s');
     }
-
-
 
     public function CancelBooking($id){
         $booking = Booking::where("user_id", Auth::user()->id)->find($id);

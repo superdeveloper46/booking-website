@@ -6,8 +6,8 @@ $(function() {
 
     $(".dark-mode").on("click", function() {
 
-        if (localStorage.getItem('theme') === 'theme-dark') {
-            setTheme('light-there');
+        if (localStorage.getItem('theme') === 'dark-theme') {
+            setTheme('light-theme');
         } else {
             setTheme('dark-theme');
         }
@@ -64,5 +64,6 @@ $(function() {
 
 function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
+    console.log('themeName: ', themeName);
     document.documentElement.className = themeName;
 }
