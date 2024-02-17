@@ -76,6 +76,14 @@ class BookingController extends Controller
     }
 
     public function Book(){
+        // $currentYear = now()->year;
+        // $bookings = Booking::where('status', '1')
+        //                     ->whereYear('start_at', $currentYear)
+        //                     ->get();
+
+        // echo json_encode($bookings);
+        // exit();
+
         $roomType = 'meeting';
         if(Auth::user()->role == 'user') {
             $roomType = 'meeting';

@@ -32,7 +32,7 @@ class BookNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('topwebdev46@gmail.com', 'DreamDev'),
+            from: new Address(env('MAIL_FROM_ADDRESS'), evn('MAIL_FROM_NAME')),
             subject: 'Book Notification',
         );
     }

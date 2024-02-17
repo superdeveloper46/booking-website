@@ -192,6 +192,9 @@ function getWeekPositionOfMonth(dateString) {
 }
 
 function isBookingConflict(newBooking) {
+    toastr.info("Checking Overlap");
+    jQuery(".preloader").show();
+    jQuery(".preloader").css("background", "#1B213280");
     const RRule = rrule.RRule;
 
     var newOccurrences = [];
@@ -208,7 +211,7 @@ function isBookingConflict(newBooking) {
     }
 
     for (var i = 0; i < real_bookings.length; i++) {
-        const existingBooking = real_bookings[i];
+        var existingBooking = JSON.parse(JSON.stringify(real_bookings[i])) ;
         if(existingBooking.resourceId != newBooking.resourceId) {
             continue;
         }
@@ -223,12 +226,13 @@ function isBookingConflict(newBooking) {
             var weekdays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
             if (existingBooking.rrule.byweekday) existingBooking.rrule.byweekday = existingBooking.rrule.byweekday.map((item) => weekdays.indexOf(item));
 
-            const existingRule = new RRule(existingBooking.rrule);
+            var existingRule = new RRule(existingBooking.rrule);
             existingOccurrences = existingRule.between(
                 existingBooking.rrule.dtstart,
                 new Date(new Date().setFullYear(existingBooking.rrule.dtstart.getFullYear() + 1)),
                 true
             );
+
         }
 
         for (const existingStart of existingOccurrences) {
@@ -236,11 +240,13 @@ function isBookingConflict(newBooking) {
             for (const newStart of newOccurrences) {
                 var newEnd = newBooking.repeat == 'none' ? newBooking.end : new Date(newStart.getTime() + parseDuration(newBooking.duration));
                 if (isOverlap(existingStart, existingEnd, newStart, newEnd)) {
+                    jQuery(".preloader").hide();
                     return true;
                 }
             }
         }
     }
+    jQuery(".preloader").hide();
     return false;
 }
 
@@ -362,7 +368,6 @@ function checkOverlapping() {
 
     if (isBookingConflict(newBooking)) {
         toastr.warning("Booking conflicts with existing bookings. Please choose another time.");
-        location.reload();
         return false;
     }
     return true;
@@ -388,6 +393,7 @@ $("#buyForm").submit(function(event) {
                 if(checkTimeValidation()) {
                     if(checkOverlapping()) {
                         checked = true;
+                        toastr.success("succes")
                         $(this).submit();
                     }
                 }
