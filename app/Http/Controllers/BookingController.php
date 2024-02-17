@@ -9,6 +9,10 @@ use App\Models\Room;
 use DB;
 use DateTime;
 
+
+use App\Mail\BookNotification;
+use Illuminate\Support\Facades\Mail;
+
 class BookingController extends Controller
 {
     // Admin View
@@ -49,9 +53,10 @@ class BookingController extends Controller
     }
 
     public function BookingCalendar(){
-        $bookings = Booking::select('id', 'room_id as resourceId', 'title', 'start_at AS start', 'end_at AS end', 'repeat')
+        $currentYear = now()->year;
+        $bookings = Booking::selectRaw('`bookings`.id, room_id as `resourceId`, `title`, `repeat`, start_at AS `start`, end_at AS `end`, `repeat`, `freq`, `interval`, `until`, `count`, `byweekday`, `bysetpos`, `bymonthday`')
                             ->where('status', '1')
-                            ->whereDate('start_at', \DB::raw('CURDATE()'))
+                            ->whereYear('start_at', $currentYear)
                             ->get();
         $rooms = Room::select('id', 'name as title')
                         ->orderBy('type')
@@ -71,23 +76,36 @@ class BookingController extends Controller
     }
 
     public function Book(){
-        $rooms = Room::where('type', 'meeting')->get();
-        return view('frontend.book.book', compact('rooms'));
+        $roomType = 'meeting';
+        if(Auth::user()->role == 'user') {
+            $roomType = 'meeting';
+        }else {
+            $roomType = 'scholar';
+        }
+
+        $currentYear = now()->year;
+        $bookings = Booking::leftJoin('rooms', 'bookings.room_id', '=', 'rooms.id')
+                            ->selectRaw('`bookings`.id, room_id as `resourceId`, `title`, `repeat`, start_at AS `start`, end_at AS `end`, `repeat`, `freq`, `interval`, `until`, `count`, `byweekday`, `bysetpos`, `bymonthday`')
+                            ->where('status', '1')
+                            ->where('rooms.type', $roomType)
+                            ->whereYear('start_at', $currentYear)
+                            ->get();
+        $rooms = Room::select('id', 'name', 'name as title')
+                        ->where('type', $roomType)
+                        ->orderBy('type')
+                        ->get();
+        return view('frontend.book.book', ['bookings'=>$bookings, 'rooms'=>$rooms]);
     }
 
     public function BookStore(Request $request){
+        if(Auth::user()->can_book == 'no') {
+            $notification = array(
+                'message' => "You don't have permission to book. Please contact your administrator.",
+                'alert-type' => 'warning'
+            );
 
-        $request->validate([
-            'room' => 'required',
-            'date' => 'required',
-            'start_at' => 'required',
-            'end_at' => 'required',
-            'name' => 'required',
-            'number' => 'required',
-            'email' => 'required',
-            'title' => 'required',
-            'reason' => 'required',
-        ]);
+            return redirect()->route('book')->with($notification)->withInput();
+        }
 
         $start_at = $this->createDateTime($request->date, $request->start_at);
         $end_at = $this->createDateTime($request->date, $request->end_at);
@@ -96,47 +114,6 @@ class BookingController extends Controller
         $endTimeObj = new DateTime($end_at);
         $currentDateTime = new DateTime();
         $timeDifference = $startTimeObj->getTimestamp() -$currentDateTime->getTimestamp();
-
-
-        // end_at > start_at
-        if($startTimeObj->getTimestamp() >= $endTimeObj->getTimestamp()) {
-            $notification = array(
-                'message' => 'The end time must be later than the start time.',
-                'alert-type' => 'warning'
-            );
-            return redirect()->route('book')->with($notification)->withInput();
-        }
-
-
-        // before 24 hours
-        if($timeDifference < 86400) {
-            $notification = array(
-                'message' => 'Booking must be made one day in advance.',
-                'alert-type' => 'warning'
-            );
-
-            return redirect()->route('book')->with($notification)->withInput();
-        }
-
-        // overlapping
-        if($request->repeat == "none") {
-            $overlappingBookings = Booking::findOverlappingBookings(
-                $start_at,
-                $end_at
-            );
-
-            if(!empty($overlappingBookings)) {
-                $notification = array(
-                    'message' => 'There are overlapping bookings.',
-                    'alert-type' => 'warning'
-                );
-
-                return redirect()->route('book')->with($notification)->withInput();
-            }
-        }else {
-
-        }
-
 
         $book = new Booking();
         $book->room_id = $request->room;
@@ -150,6 +127,39 @@ class BookingController extends Controller
         $book->reason = $request->reason;
         $book->user_id = Auth::user()->id;
         $book->status = 1;
+
+        // Repeat part
+        if($request->repeat != 'none') {
+            $book->freq = strstr($request->repeat, "monthly") ? "monthly": $request->repeat;
+            $book->interval = $request->interval;
+
+            if($request->rend == 'until') {
+                $book->until = $request->until;
+            }
+            if($request->rend == 'count') {
+                $book->count = $request->count;
+            }
+
+            $weekdays = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
+            $byweekday = "";
+            foreach ($weekdays as $weekday) {
+                if (isset($request->$weekday)) {
+                    $byweekday .= $request->$weekday . ",";
+                }
+            }
+            $book->byweekday = rtrim($byweekday, ",");
+
+            if(isset($request->byweekday)) {
+                $book->byweekday = $request->byweekday;
+            }
+            if(isset($request->bymonthday)) {
+                $book->bymonthday = $request->bymonthday;
+            }
+            if(isset($request->bysetpos)) {
+                $book->bysetpos = $request->bysetpos;
+            }
+        }
+
         $book->save();
 
         $notification = array(

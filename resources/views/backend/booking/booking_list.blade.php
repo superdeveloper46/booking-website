@@ -2,7 +2,7 @@
 @section('admin')
 
 <div class="page-content">
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="page-breadcrumb d-flex align-items-center mb-3">
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
@@ -23,10 +23,10 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Booking Date</th>
+                            <th>Date</th>
                             <th>Title</th>
                             <th>Room</th>
-                            <th>Booking IN/Out</th>
+                            <th>Start/End</th>
                             <th>Repeat</th>
                             <th>User</th>
                             <th>Email</th>
@@ -42,8 +42,10 @@
                             <td> {{ date('Y-m-d', strtotime($item->created_at)) }} </td>
                             <td> {{ $item->title}} </td>
                             <td> {{ $item->room->name}} </td>
-                            <td> <span class="badge bg-primary">{{ $item->start_at }}</span> <br> <span class="badge bg-warning text-dark">{{ $item->end_at }}</span> </td>
-                            <td> {{ $item->repeat }} </td>
+                            <td>
+                                <span class="badge bg-primary">{{ substr($item->start_at, 0, 16) }} ~ {{substr($item->end_at, 11, 5)}}</span>
+                            </td>
+                            <td> {{ ucfirst($item->repeat) }} </td>
                             <td> {{ $item->name }} </td>
                             <td> {{ $item->email }} </td>
                             {{-- <td> {{ $item->reason }} </td> --}}

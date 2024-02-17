@@ -64,6 +64,5 @@ $(function() {
 
 function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
-    console.log('themeName: ', themeName);
     document.documentElement.className = themeName;
 }

@@ -43,7 +43,7 @@
 		$('.accordion-title').not($(this)).removeClass('active');
     });
 
-    $('#datetimepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('.datetimepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 
     new WOW().init();
 

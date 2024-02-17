@@ -8,6 +8,7 @@
   $users = App\Models\User::latest()->get();
   $todayUsers = App\Models\User::whereDate('created_at', today())->get();
   $rooms = App\Models\Room::latest()->get();
+  $meetingRooms = App\Models\Room::latest()->where('type', 'meeting')->get();
 
 @endphp
 
@@ -19,7 +20,7 @@
                     <div class="d-flex align-items-center">
                         <div>
                             <p class="mb-0 text-secondary">Total Users</p>
-                            <h4 class="my-1 text-info">{{ count($bookings) }}</h4>
+                            <h4 class="my-1 text-info">{{ count($users) }}</h4>
                             <p class="mb-0 font-13">Today registered: {{count($todayUsers)}}</p>
                         </div>
                         <div class="widgets-icons-2 rounded-circle bg-gradient-blues text-white ms-auto"><i class='bx bx-user'></i>
@@ -50,6 +51,7 @@
                     <div>
                         <p class="mb-0 text-secondary">Total Rooms</p>
                         <h4 class="my-1 text-primary">{{ count($rooms) }}</h4>
+                        <p class="mb-0 font-13">Meeting Rooms: {{count($meetingRooms)}}</p>
                     </div>
                     <div class="widgets-icons-2 rounded-circle bg-gradient-burning text-white ms-auto"><i class='bx bx-windows'></i>
                     </div>

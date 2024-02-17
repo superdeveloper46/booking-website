@@ -1,10 +1,10 @@
 @extends('admin.admin_dashboard')
-@section('admin') 
+@section('admin')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
 <div class="page-content">
 				<!--breadcrumb-->
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="page-breadcrumb d-flex align-items-center mb-3">
         <div class="breadcrumb-title pe-3">User Profile</div>
         <div class="ps-3">
             <nav aria-label="breadcrumb">
@@ -15,7 +15,7 @@
                 </ol>
             </nav>
         </div>
-        
+
     </div>
     <!--end breadcrumb-->
     <div class="container">
@@ -28,8 +28,8 @@
                                 <img src="{{ (!empty($profileData->photo)) ? url('upload/admin_images/'.$profileData->photo) : url('upload/no_image.png') }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
                                 <div class="mt-3">
                                     <h4>{{ $profileData->name }}</h4>
-                                    <p class="text-secondary mb-1">{{ $profileData->email }}</p> 
-                                
+                                    <p class="text-secondary mb-1">{{ $profileData->email }}</p>
+
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                                         <input type="text" name="address" class="form-control" value="{{ $profileData->address }}" />
                                     </div>
                                 </div>
-                            
+
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Photo </h6>
@@ -119,6 +119,6 @@ $(document).ready(function(){
     });
 });
 
-</script>      
+</script>
 
 @endsection

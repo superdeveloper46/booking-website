@@ -1,9 +1,9 @@
 @extends('admin.admin_dashboard')
-@section('admin') 
+@section('admin')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
 <div class="page-content">
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+    <div class="page-breadcrumb d-flex align-items-center mb-3">
         <div class="breadcrumb-title pe-3">Admin Change Password</div>
         <div class="ps-3">
             <nav aria-label="breadcrumb">
@@ -25,8 +25,8 @@
                                 <img src="{{ (!empty($profileData->photo)) ? url('upload/admin_images/'.$profileData->photo) : url('upload/no_image.png') }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
                                 <div class="mt-3">
                                     <h4>{{ $profileData->name }}</h4>
-                                    <p class="text-secondary mb-1">{{ $profileData->email }}</p> 
-                                
+                                    <p class="text-secondary mb-1">{{ $profileData->email }}</p>
+
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                             @csrf
 
                             <div class="card-body">
-                            
+
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0"> Old Password </h6>
@@ -69,10 +69,10 @@
                                         <h6 class="mb-0"> Confirm New Password </h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="password" name="new_password_confirmation" class="form-control" id="new_password_confirmation"  /> 
+                                        <input type="password" name="new_password_confirmation" class="form-control" id="new_password_confirmation"  />
                                     </div>
                                 </div>
-                            
+
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-9 text-secondary">

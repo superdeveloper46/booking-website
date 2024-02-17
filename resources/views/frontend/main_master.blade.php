@@ -35,6 +35,9 @@
 	    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
         <!-- toastr CSS -->
 
+        <!-- Jquery Min JS -->
+        <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
+
         <title>Loom Booking</title>
     </head>
     <body>
@@ -67,9 +70,6 @@
         @include('frontend.body.footer')
         <!-- Footer Area End -->
 
-
-        <!-- Jquery Min JS -->
-        <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
         <!-- Bootstrap Bundle Min JS -->
         <script src="{{ asset('frontend/assets/js/bootstrap.bundle.min.js') }}"></script>
         <!-- Magnific Popup Min JS -->

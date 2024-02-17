@@ -17,9 +17,13 @@ class BookNotification extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+
+    public $start_at = '';
+    public $end_at = '';
+    public function __construct($start_at, $end_at)
     {
-        //
+        $this->start_at = $start_at;
+        $this->end_at = $end_at;
     }
 
     /**
@@ -39,7 +43,7 @@ class BookNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'notification.notification',
+            view: 'notification.book',
         );
     }
 
