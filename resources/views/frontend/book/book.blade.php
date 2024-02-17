@@ -30,7 +30,7 @@
                                                     <div class="select-box">
                                                         <select name="room" class="form-control">
                                                             @foreach ($rooms as $room)
-                                                                <option>{{ $room->name }}</option>
+                                                                <option value="{{$room->id}}">{{ $room->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>

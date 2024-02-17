@@ -198,7 +198,6 @@ function isBookingConflict(newBooking) {
     if(newBooking.repeat == 'none') {
         newOccurrences.push(newBooking.start);
     }else {
-        console.log('newBooking: ', newBooking);
         const newRule = new RRule(newBooking.rrule);
 
         newOccurrences = newRule.between(
@@ -208,9 +207,11 @@ function isBookingConflict(newBooking) {
         )
     }
 
-    for (let i = 0; i < real_bookings.length; i++) {
+    for (var i = 0; i < real_bookings.length; i++) {
         const existingBooking = real_bookings[i];
-
+        if(existingBooking.resourceId != newBooking.resourceId) {
+            continue;
+        }
         var existingOccurrences = [];
         if(existingBooking.repeat == 'none') {
             existingOccurrences.push(new Date(existingBooking.start));
@@ -223,7 +224,6 @@ function isBookingConflict(newBooking) {
             if (existingBooking.rrule.byweekday) existingBooking.rrule.byweekday = existingBooking.rrule.byweekday.map((item) => weekdays.indexOf(item));
 
             const existingRule = new RRule(existingBooking.rrule);
-            console.log('existingBooking.rrule: ', existingBooking.rrule);
             existingOccurrences = existingRule.between(
                 existingBooking.rrule.dtstart,
                 new Date(new Date().setFullYear(existingBooking.rrule.dtstart.getFullYear() + 1)),
@@ -311,6 +311,7 @@ function checkTimeValidation() {
 }
 
 function checkOverlapping() {
+    var resourceId = parseInt($('[name="room"]').val());
     var repeat = $('[name="repeat"]').val();
     var date = $('[name="date"]').val();
     var start = new Date(date + " " + $('[name="start_at"]').val());
@@ -322,7 +323,7 @@ function checkOverlapping() {
     var bymonthday = $('[name="bymonthday"]').val();
     var bysetpos = $('[name="bysetpos"]').val();
 
-    var newBooking = {'repeat': repeat};
+    var newBooking = {repeat, resourceId};
     if(repeat == 'none') {
         newBooking.start = start,
         newBooking.end = end
@@ -336,10 +337,8 @@ function checkOverlapping() {
         if ($("[name='rend']").val() == 'until') rrule.until = new Date(until);
         if ($("[name='rend']").val() == 'count') rrule.count = parseInt(count);
 
-
-        rrule.byweekday = [];
         var weekdays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
-        if (byweekday != "") {
+        if (byweekday && weekdays.includes(byweekday)) {
             rrule.byweekday.push(weekdays.indexOf(byweekday));
         }
         for (i=0; i<weekdays.length; i++) {
@@ -380,19 +379,21 @@ $("[name='rend']").change(function() {
     $("[name='"+selected+"']").attr("disabled", false);
 });
 
+var checked = false;
 $("#buyForm").submit(function(event) {
-    event.preventDefault();
-    // if(checkValidation()){
-    //     if(checkDateValidation()) {
-    //         if(checkTimeValidation()) {
-                if(checkOverlapping()) {
-                    // $(this).submit();
-                    toastr.warning("success")
-                    return;
+    if(!checked) {
+        event.preventDefault();
+        if(checkValidation()){
+            if(checkDateValidation()) {
+                if(checkTimeValidation()) {
+                    if(checkOverlapping()) {
+                        checked = true;
+                        $(this).submit();
+                    }
                 }
-    //         }
-    //     }
-    // }
+            }
+        }
+    }
 });
 
 
