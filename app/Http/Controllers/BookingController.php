@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Room;
 use DB;
 use DateTime;
+use RRule\RRule;
 
 
 use App\Mail\BookNotification;
@@ -65,6 +66,11 @@ class BookingController extends Controller
         return view('backend.booking.booking_calendar', ['bookings'=>$bookings, 'rooms'=>$rooms]);
     }
 
+    public function BookingByID($id){
+        $booking = Booking::find($id);
+        return $booking;
+    }
+
     // User View
     public function UserBookList(){
         $id = Auth::user()->id;
@@ -76,13 +82,7 @@ class BookingController extends Controller
     }
 
     public function Book(){
-        // $currentYear = now()->year;
-        // $bookings = Booking::where('status', '1')
-        //                     ->whereYear('start_at', $currentYear)
-        //                     ->get();
 
-        // echo json_encode($bookings);
-        // exit();
 
         $roomType = 'meeting';
         if(Auth::user()->role == 'user') {

@@ -1,8 +1,7 @@
 var roomType = 'line';
 var initialView = 'resourceTimelineDay';
 var right = 'resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth';
-
-var eventColors = ["green", "blue", "red", "purple", "orange", "pink"];
+var eventColors = ["#039BE5", "#3F51B5", "#F4511E", "#8E24AA", "#0B8043", "#D50000", "#33B679", "#7986CB", "#616161"];
 rooms.forEach((room, index) => {
     room.eventColor = eventColors[index];
 });
@@ -64,7 +63,7 @@ function view() {
         navLinks: true,
         selectable: true,
         nowIndicator: true,
-        editable: true,
+        editable: false,
         selectable: true,
         selectOverlap: false,
         businessHours: true,
@@ -267,30 +266,37 @@ function parseDuration(durationString) {
 function checkValidation() {
     if($('[name="room"]').val() == '') {
         toastr.warning("Room field is required.");
+        $('[name="room"]').focus();
         return false;
     }
     if($('[name="date"]').val() == '') {
         toastr.warning("Date field is required.");
+        $('[name="date"]').focus();
         return false;
     }
     if($('[name="name"]').val() == '') {
         toastr.warning("Name field is required.");
+        $('[name="name"]').focus();
         return false;
     }
     if($('[name="number"]').val() == '') {
         toastr.warning("Phone field is required.");
+        $('[name="number"]').focus();
         return false;
     }
     if($('[name="email"]').val() == '') {
         toastr.warning("Email field is required.");
+        $('[name="email"]').focus();
         return false;
     }
     if($('[name="title"]').val() == '') {
         toastr.warning("Title field is required.");
+        $('[name="title"]').focus();
         return false;
     }
     if($('[name="reason"]').val() == '') {
         toastr.warning("Reason field is required.");
+        $('[name="reason"]').focus();
         return false;
     }
     return true;
@@ -393,7 +399,6 @@ $("#buyForm").submit(function(event) {
                 if(checkTimeValidation()) {
                     if(checkOverlapping()) {
                         checked = true;
-                        toastr.success("succes")
                         $(this).submit();
                     }
                 }

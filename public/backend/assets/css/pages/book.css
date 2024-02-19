@@ -35,3 +35,21 @@
         text-align: right !important;
     }
 }
+
+#booking_detail_modal i {
+    color: #008cff!important;
+    font-size: 22px;
+}
+
+#booking_detail_modal .detail_row {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+
+#booking_detail_modal span {
+    font-size: 16px;
+}

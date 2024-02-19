@@ -1,7 +1,7 @@
 var roomType = 'line';
 var right = 'resourceTimeGridDay,resourceTimeGridWeek,resourceDayGridMonth,listWeek';
 var initialView = 'resourceTimeGridDay';
-var eventColors = ["green", "blue", "red", "purple", "orange", "pink"];
+var eventColors = ["#039BE5", "#3F51B5", "#F4511E", "#8E24AA", "#0B8043", "#D50000", "#33B679", "#7986CB", "#616161"];
 rooms.forEach((room, index) => {
     room.eventColor = eventColors[index];
 });
@@ -11,6 +11,7 @@ bookings.forEach((booking_data, index) => {
         id: booking_data.id,
         title: booking_data.title,
         resourceId: booking_data.resourceId,
+        repeat: booking_data.repeat
     };
 
     if (booking_data.repeat !== 'none') {
@@ -74,7 +75,7 @@ function view() {
         navLinks: true,
         selectable: true,
         nowIndicator: true,
-        editable: false,
+        editable: true,
         selectable: true,
         businessHours: true,
         dayMaxEvents: true,
@@ -107,6 +108,9 @@ function view() {
             listWeek: {
                 titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
             },
+        },
+        eventClick: function(info) {
+            viewDetail(info.event.id, "calendar");
         }
     });
     calendar.render();

@@ -25,9 +25,9 @@
             </nav>
         </div>
         <div class="ms-auto">
-            <button type="button" class="btn btn-primary" onclick="changeRoomType()" title="Change Room Type">
+            <div type="button" class="widgets-icons rounded-circle mx-auto bg-light-info text-info mb-3" onclick="changeRoomType()" title="Change Room Type">
                 <i class="bx bx-recycle"></i>
-            </button>
+            </div>
         </div>
     </div>
 

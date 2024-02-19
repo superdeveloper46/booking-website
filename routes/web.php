@@ -65,6 +65,7 @@ Route::middleware(['auth','roles:admin'])->group(function(){
         Route::get('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
 
         Route::get('/booking-calendar', 'BookingCalendar')->name('bookingCalendar');
+        Route::get('/booking-id/{id}', 'BookingByID')->name('bookingByID');
     });
 });
 

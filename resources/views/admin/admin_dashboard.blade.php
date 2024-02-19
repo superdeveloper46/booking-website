@@ -64,6 +64,48 @@
 	</div>
 	<!--end wrapper-->
 
+
+<div class="modal fade myModal" id="booking_detail_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Booking Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail_row">
+                    <h5 id="detail_title"></h5>
+                </div>
+                <div class="detail_row">
+                    <i class="bx bx-time"></i>
+                    <span id="detail_time"></span>
+                </div>
+                <div class="d-flex">
+                    <div class="detail_row me-5">
+                        <i class="bx bx-user-circle"></i>
+                        <span id="detail_name"></span>
+                    </div>
+                    <div class="detail_row">
+                        <i class="bx bx-mail-send"></i>
+                        <span id="detail_email"></span>
+                    </div>
+                </div>
+                <div class="detail_row">
+                    <i class="bx bx-phone"></i>
+                    <span id="detail_phone"></span>
+                </div>
+                <div class="detail_row">
+                    <i class="bx bx-text"></i>
+                    <span id="detail_reason"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 	<!-- Bootstrap JS -->
 	<script src="{{asset('backend/assets/js/bootstrap.bundle.min.js')}}"></script>
 	<!--plugins-->

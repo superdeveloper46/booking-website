@@ -66,3 +66,17 @@ function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
     document.documentElement.className = themeName;
 }
+
+function viewDetail(id, type){
+    $.ajax(type == "calendar" ? `booking-id/${id}}` : `../booking-id/${id}}`, {
+        method: "GET",
+    }).done(function (res) {
+        $("#detail_title").text(res.title);
+        $("#detail_time").text(res.start_at.substr(0, 16) + " ~ " + res.end_at.substr(11, 5));
+        $("#detail_name").text(res.name);
+        $("#detail_email").text(res.email);
+        $("#detail_phone").text(res.contact_number);
+        $("#detail_reason").text(res.reason);
+        $("#booking_detail_modal").modal("show");
+    });
+}

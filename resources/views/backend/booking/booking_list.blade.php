@@ -1,6 +1,26 @@
 @extends('admin.admin_dashboard')
 @section('admin')
 
+<style>
+    #booking_detail_modal i {
+        color: #008cff!important;
+        font-size: 22px;
+    }
+
+    #booking_detail_modal .detail_row {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 10px;
+        padding-top: 10px;
+    }
+
+
+    #booking_detail_modal span {
+        font-size: 16px;
+    }
+</style>
+
 <div class="page-content">
     <div class="page-breadcrumb d-flex align-items-center mb-3">
         <div class="ps-3">
@@ -58,6 +78,7 @@
                             </td>
                             <td>
                                 <a href="{{ route('delete.booking', $item->id) }}" class="btn btn-outline-danger radius-30" title="Delete" id="delete"><i class="bx bx-trash me-0"></i></a>
+                                <a class="btn btn-outline-info radius-30" title="View Detail" onclick="viewDetail({{$item->id}}, 'list')"><i class="bx bx-detail me-0"></i></a>
                             </td>
                         </tr>
                         @endforeach
