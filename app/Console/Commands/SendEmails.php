@@ -4,6 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Booking;
+use DateTime;
+use RRule\RRule;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SendEmails extends Command
 {
@@ -28,7 +32,7 @@ class SendEmails extends Command
     {
         $currentYear = now()->year;
         $bookings = Booking::where('status', '1')
-                            ->where('mail_sent', '0')
+                            ->where('can_send', '0')
                             ->whereYear('start_at', $currentYear)
                             ->get();
 
@@ -39,10 +43,10 @@ class SendEmails extends Command
                 $current_time->modify('+1 hour');
                 $target_time = new DateTime($booking->start_at);
                 if ($current_time > $target_time) {
-                    // Mail::to($booking->email)->send(new \App\Mail\BookNotification($booking->start_at, $booking->end_at));
-                    $updateBooking = Booking::find($booking->id);
-                    $booking->mail_sent = 1;
+                    Mail::to($booking->email)->send(new \App\Mail\BookNotification(substr($booking->start_at, 11, 5), substr($booking->end_at, 11, 5)));
+                    $booking->can_send = 1;
                     $booking->save();
+                    Log::info('Success');
                 }
             }else {
                 $rrule_array = [
@@ -64,23 +68,22 @@ class SendEmails extends Command
                     $current_time = new DateTime();
                     $current_time->modify('+1 hour');
                     if($occurrence->format('Y-m-d') == $target_time->format('Y-m-d')) {
-                        echo $booking->email;
                         $count = 1;
                         if ($current_time > $occurrence) {
-                            // Mail::to($booking->email)->send(new \App\Mail\BookNotification($booking->start_at, $booking->end_at));
+                            Mail::to($booking->email)->send(new \App\Mail\BookNotification(substr($booking->start_at, 11, 5), substr($booking->end_at, 11, 5)));
+                            Log::info('Success');
+                            $booking->sent_date = $current_time;
+                            $booking->save();
                         }
                         break;
                     }
                 }
-                var_dump(isset($booking->until));
                 if($count == 0 && isset($booking->until)) {
-                    $updateBooking = Booking::find($booking->id);
-                    $booking->mail_sent = 1;
+                    $booking->can_send = 1;
                     $booking->save();
                 }
             }
         }
-
-        $this->info('Email sent successfully.');
+        Log::info('This is an informational message for cron job');
     }
 }
