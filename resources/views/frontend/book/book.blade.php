@@ -204,6 +204,7 @@
     var rooms = @json($rooms);
     var current_date = "<?php echo date("Y-m-d"); ?>";
 </script>
+<script src="{{ asset('global.js')}}"></script>
 <script src="{{ asset('frontend/assets/js/pages/book.js') }}"></script>
 
 @endsection

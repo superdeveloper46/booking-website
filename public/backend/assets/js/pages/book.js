@@ -1,4 +1,4 @@
-var roomType = 'line';
+var roomType = 'grid';
 var right = 'resourceTimeGridDay,resourceTimeGridWeek,resourceDayGridMonth,listWeek';
 var initialView = 'resourceTimeGridDay';
 var eventColors = ["#039BE5", "#3F51B5", "#F4511E", "#8E24AA", "#0B8043", "#D50000", "#33B679", "#7986CB", "#616161"];
@@ -6,46 +6,7 @@ rooms.forEach((room, index) => {
     room.eventColor = eventColors[index];
 });
 var real_bookings = [];
-bookings.forEach((booking_data, index) => {
-    var tmp = {
-        id: booking_data.id,
-        title: booking_data.title,
-        resourceId: booking_data.resourceId,
-        repeat: booking_data.repeat
-    };
 
-    if (booking_data.repeat !== 'none') {
-        var rrule = {
-            freq: booking_data.freq,
-            interval: booking_data.interval,
-            dtstart: booking_data.start,
-        };
-
-        if (booking_data.until) rrule.until = booking_data.until;
-        if (booking_data.count) rrule.count = booking_data.count;
-        if (booking_data.byweekday) {
-            if (booking_data.byweekday.endsWith(',')) {
-                booking_data.byweekday = booking_data.byweekday.slice(0, -1);
-            }
-            rrule.byweekday = booking_data.byweekday.split(",");
-        }
-        if (booking_data.bymonthday) {
-            if (booking_data.bymonthday.endsWith(',')) {
-                booking_data.bymonthday = booking_data.bymonthday.slice(0, -1);
-            }
-            rrule.bymonthday = booking_data.bymonthday.split(",");
-            rrule.bymonthday = rrule.bymonthday.map(element => parseInt(element));
-        }
-        if (booking_data.bysetpos) rrule.bysetpos = booking_data.bysetpos;
-
-        tmp.rrule = rrule;
-        tmp.duration = getTimeDifference(booking_data.start, booking_data.end);
-    } else {
-        tmp.start = booking_data.start;
-        tmp.end = booking_data.end;
-    }
-    real_bookings.push(tmp);
-});
 
 function changeRoomType() {
     if(roomType == 'line') {
@@ -86,62 +47,24 @@ function view() {
         slotMinWidth: 80,
         dayMinWidth: 100,
         resourceAreaWidth: '150px',
-        views: {
-            resourceTimelineDay: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            resourceTimelineWeek: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            resourceTimelineMonth: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            resourceTimeGridDay: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            resourceTimeGridWeek: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            resourceTimeGridMonth: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
-            listWeek: {
-                titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            },
+        titleFormat: function(data) {
+            if(data.end.day == data.start.day) {
+                return `${data.start.year}/${data.start.month+1}/${data.start.day}`
+            }else {
+                return `${data.start.year}/${data.start.month+1}/${data.start.day} - ${data.end.year}/${data.end.month+1}/${data.end.day}`
+            }
         },
         eventClick: function(info) {
             viewDetail(info.event.id, "calendar");
-        }
+        },
+        select: function(info) {
+            $('[name="date"]').val(info.startStr.substring(0, 10))
+            $('[name="room"]').val(info.resource.id);
+            $('[name="start_at"]').val(getTimeString(info.startStr));
+            $('[name="end_at"]').val(getTimeString(info.endStr));
+            $("#book_now_modal").modal("show");
+        },
     });
     calendar.render();
 }
-
-function getTimeDifference(start, end) {
-    var startTime = new Date(start);
-    var endTime = new Date(end);
-    let difference = Math.abs(endTime - startTime);
-    var hours = Math.floor(difference / (1000 * 60 * 60));
-    var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-}
-
-$(function () {
-    $('.fc-header-toolbar > .fc-toolbar-chunk:first > .fc-button-group:first').append(
-        '<div class="input-group datetimepicker"><input type="text" class="form-control fc-datepicker" placeholder="YYYY-MM-DD" style="padding: 0;width: 0;border: none;margin: 0;"></div>');
-    $(".fc-datepicker").datepicker({
-        dateFormat: 'yy-mm-dd',
-        showOn: "button",
-        buttonText: '<span class="input-group-addon"><i class="bx bx-calendar"></i></span>',
-        onSelect: function(formated, dates) {
-            current_date = formated;
-            view();
-        }
-    });
-    $(".ui-datepicker-trigger").addClass("fc fc-button-primary")
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    view();
-});
-
 

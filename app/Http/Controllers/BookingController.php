@@ -82,26 +82,33 @@ class BookingController extends Controller
     }
 
     public function Book(){
-
-
         $roomType = 'meeting';
+        $currentYear = now()->year;
+
         if(Auth::user()->role == 'user') {
             $roomType = 'meeting';
+            $bookings = Booking::leftJoin('rooms', 'bookings.room_id', '=', 'rooms.id')
+                                ->selectRaw('`bookings`.id, room_id as `resourceId`, `title`, `repeat`, start_at AS `start`, end_at AS `end`, `repeat`, `freq`, `interval`, `until`, `count`, `byweekday`, `bysetpos`, `bymonthday`')
+                                ->where('status', '1')
+                                ->where('rooms.type', $roomType)
+                                ->whereYear('start_at', $currentYear)
+                                ->get();
+            $rooms = Room::select('id', 'name', 'name as title')
+                            ->where('type', $roomType)
+                            ->orderBy('type')
+                            ->get();
         }else {
             $roomType = 'scholar';
+            $bookings = Booking::leftJoin('rooms', 'bookings.room_id', '=', 'rooms.id')
+                                ->selectRaw('`bookings`.id, room_id as `resourceId`, `title`, `repeat`, start_at AS `start`, end_at AS `end`, `repeat`, `freq`, `interval`, `until`, `count`, `byweekday`, `bysetpos`, `bymonthday`')
+                                ->where('status', '1')
+                                ->whereYear('start_at', $currentYear)
+                                ->get();
+            $rooms = Room::select('id', 'name', 'name as title')
+                            ->orderBy('type')
+                            ->get();
         }
 
-        $currentYear = now()->year;
-        $bookings = Booking::leftJoin('rooms', 'bookings.room_id', '=', 'rooms.id')
-                            ->selectRaw('`bookings`.id, room_id as `resourceId`, `title`, `repeat`, start_at AS `start`, end_at AS `end`, `repeat`, `freq`, `interval`, `until`, `count`, `byweekday`, `bysetpos`, `bymonthday`')
-                            ->where('status', '1')
-                            ->where('rooms.type', $roomType)
-                            ->whereYear('start_at', $currentYear)
-                            ->get();
-        $rooms = Room::select('id', 'name', 'name as title')
-                        ->where('type', $roomType)
-                        ->orderBy('type')
-                        ->get();
         return view('frontend.book.book', ['bookings'=>$bookings, 'rooms'=>$rooms]);
     }
 
@@ -175,7 +182,11 @@ class BookingController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('user.book')->with($notification);
+        if(Auth::user()->role == "admin") {
+            return redirect()->route('bookingCalendar')->with($notification);
+        }else {
+            return redirect()->route('user.book')->with($notification);
+        }
     }
 
     public function createDateTime($date, $time) {

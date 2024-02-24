@@ -37,8 +37,8 @@
                                 <div class="col-md-6">
                                     <label for="input1" class="form-label">Room Type </label>
                                     <select name="type" class="form-select mb-3">
-                                        <option value="metting">Metting Room</option>
-                                        <option value="visiting">Visiting Room</option>
+                                        <option value="meeting">Meeting Room</option>
+                                        <option value="scholar">Scholar Room</option>
                                     </select>
                                 </div>
 
