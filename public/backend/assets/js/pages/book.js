@@ -1,6 +1,6 @@
-var roomType = 'grid';
-var right = 'resourceTimeGridDay,resourceTimeGridWeek,resourceDayGridMonth,listWeek';
-var initialView = 'resourceTimeGridDay';
+var roomType = 'line';
+var right = 'resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth,listWeek';
+var initialView = 'resourceTimelineDay';
 var eventColors = ["#039BE5", "#3F51B5", "#F4511E", "#8E24AA", "#0B8043", "#D50000", "#33B679", "#7986CB", "#616161"];
 rooms.forEach((room, index) => {
     room.eventColor = eventColors[index];
@@ -47,6 +47,7 @@ function view() {
         slotMinWidth: 80,
         dayMinWidth: 100,
         resourceAreaWidth: '150px',
+        slotMinTime: '06:00',
         titleFormat: function(data) {
             if(data.end.day == data.start.day) {
                 return `${data.start.year}/${data.start.month+1}/${data.start.day}`

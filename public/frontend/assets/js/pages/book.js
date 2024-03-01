@@ -34,6 +34,7 @@ function view() {
         slotMinWidth: 70,
         dayMinWidth: 100,
         resourceAreaWidth: '130px',
+        slotMinTime: '06:00',
         titleFormat: function(data) {
             if(data.end.day == data.start.day) {
                 return `${data.start.year}/${data.start.month+1}/${data.start.day}`

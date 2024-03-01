@@ -64,12 +64,12 @@ class SendEmails extends Command
 
                 $rrule = new RRule($rrule_array);
 
-                $count = 0;
                 foreach ($rrule as $occurrence) {
                     $current_time = new DateTime();
-                    if($occurrence->format('Y-m-d') == $current_time->format('Y-m-d') && ($booking->sent_date == null || $occurrence->format('Y-m-d') != $booking->sent_date->format('Y-m-d'))) {
+                    $bookingSentDate = $booking->sent_date ? (new DateTime($booking->sent_date))->format('Y-m-d') : null;
+
+                    if($occurrence->format('Y-m-d') == $current_time->format('Y-m-d') && ($occurrence->format('Y-m-d') != $bookingSentDate)) {
                         $current_time->modify('+1 hour');
-                        $count = 1;
                         if ($current_time > $occurrence) {
                             Mail::to($booking->email)->send(new \App\Mail\BookNotification(substr($booking->start_at, 11, 5), substr($booking->end_at, 11, 5)));
                             Log::info('Success');
@@ -78,8 +78,11 @@ class SendEmails extends Command
                         }
                         break;
                     }
+                    if(new DateTime($occurrence->format('Y-m-d')) > new DateTime($current_time->format('Y-m-d'))) {
+                        break;
+                    }
                 }
-                if($count == 0 && isset($booking->until)) {
+                if(isset($booking->until) && new DateTime($booking->until) < new DateTime()) {
                     $booking->can_send = 1;
                     $booking->sent_date = new DateTime();
                     $booking->save();
