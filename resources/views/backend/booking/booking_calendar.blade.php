@@ -84,11 +84,13 @@
                                 <label>Start <span class="required">*</span></label>
                                 <div class="select-box">
                                     <select name="start_at" class="form-control">
-                                        @for ($i=1; $i<=12; $i++)
+                                        @for ($i=6; $i<=11; $i++)
                                             <option value="{{ $i }}:00 AM">{{ $i }}:00 AM</option>
                                             <option value="{{ $i }}:30 AM">{{ $i }}:30 AM</option>
                                         @endfor
-                                        @for ($i=1; $i<=12; $i++)
+                                        <option value="12:00 PM">12:00 PM</option>
+                                        <option value="12:30 PM">12:30 PM</option>
+                                        @for ($i=1; $i<=11; $i++)
                                             <option value="{{ $i }}:00 PM">{{ $i }}:00 PM</option>
                                             <option value="{{ $i }}:30 PM">{{ $i }}:30 PM</option>
                                         @endfor
@@ -102,11 +104,13 @@
                                 <label>End <span class="required">*</span></label>
                                 <div class="select-box">
                                     <select name="end_at" class="form-control">
-                                        @for ($i=1; $i<=12; $i++)
+                                        @for ($i=6; $i<=11; $i++)
                                             <option value="{{ $i }}:00 AM">{{ $i }}:00 AM</option>
                                             <option value="{{ $i }}:30 AM">{{ $i }}:30 AM</option>
                                         @endfor
-                                        @for ($i=1; $i<=12; $i++)
+                                        <option value="12:00 PM">12:00 PM</option>
+                                        <option value="12:30 PM">12:30 PM</option>
+                                        @for ($i=1; $i<=11; $i++)
                                             <option value="{{ $i }}:00 PM">{{ $i }}:00 PM</option>
                                             <option value="{{ $i }}:30 PM">{{ $i }}:30 PM</option>
                                         @endfor
@@ -125,7 +129,7 @@
                                         <option value="weekly">Weekly</option>
                                         <option value="monthly by days in month">Monthly By Days In Month</option>
                                         <option value="monthly by days in week">Monthly By Days In Week</option>
-                                        <option value="yearly">Yearly</option>
+                                        {{-- <option value="yearly">Yearly</option> --}}
                                     </select>
                                 </div>
                             </div>
